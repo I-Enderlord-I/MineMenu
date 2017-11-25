@@ -5,8 +5,11 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.network.FMLNetworkEvent;
 import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.server.FMLServerHandler;
+import net.minecraft.entity.player.EntityPlayerMP;
 import dmillerw.menu.data.session.ActionSessionData;
 import dmillerw.menu.handler.LogHandler;
+import dmillerw.menu.network.packet.client.PacketServerResponse;
 
 /**
  * @author dmillerw
@@ -18,12 +21,10 @@ public class NetworkEventHandler {
     }
 
     @SubscribeEvent
-    public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER) {
-//			if (FMLServerHandler.instance().getServer().isDedicatedServer()) {
+    public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) { 
+        if (event.player instanceof EntityPlayerMP) {
             LogHandler.info("SERVER: MineMenu is installed. Sending server response packet");
-//				PacketHandler.INSTANCE.sendTo(new PacketServerResponse(), (EntityPlayerMP) event.player);
-//			}
+            PacketHandler.INSTANCE.sendTo(new PacketServerResponse(), (EntityPlayerMP) event.player);
         }
     }
 
